@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: anomaly-backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongodb
+      - python-service
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongodb:27017/anomalydb
+      - PYTHON_SERVICE_URL=http://python-service:5000
+
+  python-service:
+    build: ./python-service
+    container_name: anomaly-python
+    ports:
+      - "5000:5000"
+
+  mongodb:
+    image: mongo:7.0
+    container_name: anomaly-mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+volumes:
+  mongo_data:
